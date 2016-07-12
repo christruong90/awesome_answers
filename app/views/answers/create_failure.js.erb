@@ -1,0 +1,6 @@
+alert("Inside create failure partial");
+
+$('#answers').prepend("<%#= j(render('/answers/answer', {answer: @answer})) %>");
+
+
+$("#answer-form").html("<%= j render 'form' %>")

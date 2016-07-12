@@ -16,6 +16,8 @@ gem 'coffee-rails', '~> 4.1.0'
 gem "cowsay"
 gem "faker", github:'stympy/faker'
 
+gem "font-awesome-rails"
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -27,6 +29,19 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+
+gem 'cancancan', '~> 1.10'
+
+gem 'rack-cors', require: 'rack/cors'
+
+gem 'friendly_id', '~> 5.1.0'
+
+gem "bootstrap-sass"
+gem 'simple_form'
+gem 'quiet_assets'
+gem 'carrierwave'
+gem "mini_magick"
+gem 'fog'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
@@ -46,6 +61,16 @@ group :development do
   gem "hirb"
   gem 'web-console', '~> 2.0'
   gem "rails-erd"
+  gem 'kaminari'
+  gem 'delayed_job_active_record'
+
+  gem 'active_model_serializers'
+
+
+  gem "letter_opener", :group => :development
+
+  gem "delayed_job_web"
+
 
 
 

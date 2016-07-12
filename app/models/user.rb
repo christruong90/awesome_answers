@@ -10,14 +10,34 @@ class User < ActiveRecord::Base
 
   has_many :questions, dependent: :nullify
 
+  has_many :likes, dependent: :destroy
+  has_many :liked_questions, through: :likes, source: :question
+
+  has_many :votes, dependent: :destroy
+  has_many :voted_questions, through: :votes, source: :question
+
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, presence: true,
                     uniqueness: true,
                     format: /\A([\w+\-]\.?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
 
+  before_create :generate_api_key
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
+
+private
+
+  def generate_api_key
+    # begin
+    #   self.api_key = SecureRandom.urlsafe_base64
+    # end while User.exists?(api_key: api_key)
+    loop do
+      self.api_key = SecureRandom.urlsafe_base64
+      break unless User.exists?(api_key: api_key)
+    end
+  end
 end

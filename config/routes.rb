@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
+
 
   resources :users, only: [:new, :create]
   # delete "/sessions" => "sessions#destroy"
@@ -7,25 +9,52 @@ Rails.application.routes.draw do
     delete :destroy, on: :collection
   end
 
+  # "/api/v1/questions" -> index
+  # get "/api/v1/questions" => "api/v1/questions#index"
+
+  # this will prepend all the urls for the questions with /api/v1 but it
+  # will still point to the questions_controller.rb
+  # scope :api do
+  #   scope :v1 do
+  #     resources :questions, only: [:index, :show]
+  #   end
+  # end
+
+  # this will prepend all the urls for the questions with /api/v1 and it
+  # will point to the api/v1/questions_controller.rb
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      resources :questions, only: [:index, :show] do
+        resources :answers, only: [:create]
+      end
+    end
+  end
+
+
+
   resources :questions do
-    #this will define a route that will be '/questions/search' and it will point to the questions controller 'search' action in that controller.
-    # 'on: :collection' makes the route not have an 'id' or 'question_id' on it
-    get :search, on: :collection
+    get   :search,    on: :collection
+    patch :mark_done, on: :member
+    post  :approve
 
-    #this will generate a route '/questions/:id/flag' and it will point to questions controller 'flag'
-    #action.
-    #'on: :member' makes the route include an ':id' in it similar to the 'edit'
-     post :flag, on: :member
+    # get "favourites", on: :collection
 
-     post :mark_done
+    # By defining `resources :answers` nested inside `resources :questions`
+    # Rails will defined all the answers routes prepended with
+    # `/questions/:question_id`. This enables us to have the question_id handy
+    # so we can create the answer associated with a question with `question_id`
+    resources :answers, only: [:create, :destroy]
 
-     # will make all the answers routes nested within 'questions' which
-     #means all the answers routes will be prepended with '/questions/:question_id'
+    resources :likes, only: [:create, :destroy]
 
-     resources :answers, only: [:create, :destroy]
+    resources :favourites, only: [:create, :destroy]
+
+    resources :votes, only: [:create, :update, :destroy]
 
   end
-  #get  "/questions/new"      => "questions#new",    as: #:new_question
+
+  resources :likes, only: [:index]
+#get  "/questions/new"      => "questions#new",    as: #:new_question
   #post "/questions"          => "questions#create", as: #:questions
 #  #get  "/questions/:id"     => "questions#show",   as: #:question
   #get  "/questions"          => "questions#index"
